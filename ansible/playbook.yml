@@ -1,0 +1,33 @@
+- hosts: localhost
+  tasks:
+    - name: Install and configure Filebeat
+      ansible.builtin.yum:
+        name: filebeat
+        state: present
+
+    - name: Configure Filebeat
+      ansible.builtin.template:
+        src: templates/filebeat.yml.j2
+        dest: /etc/filebeat/filebeat.yml
+
+    - name: Start and enable Filebeat service
+      ansible.builtin.service:
+        name: filebeat
+        state: started
+        enabled: yes
+
+    - name: Configure alerting with Elastalert
+      ansible.builtin.yum:
+        name: elastalert
+        state: present
+
+    - name: Configure Elastalert
+      ansible.builtin.template:
+        src: templates/elastalert.yml.j2
+        dest: /etc/elastalert/config.yml
+
+    - name: Start and enable Elastalert service
+      ansible.builtin.service:
+        name: elastalert
+        state: started
+        enabled: yes
